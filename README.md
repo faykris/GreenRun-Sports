@@ -3,7 +3,7 @@ This repository has a demonstration about an API that will be used for a sportsb
 
 The information about this backend solution will be updated soon...
 
-## technologies & frameworks used
+## Technologies & frameworks used
 - Nodejs
 - MySQL
 - Hapi
@@ -17,4 +17,3 @@ The information about this backend solution will be updated soon...
 
 ## Authors
 - Cristian Pinzon
-- 
