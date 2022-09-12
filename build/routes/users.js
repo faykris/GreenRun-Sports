@@ -3,6 +3,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.users = void 0;
 const users_1 = require("../models/users");
 const users = (server) => {
+    // Welcome Message
+    server.route({
+        method: 'GET',
+        path: '/',
+        handler: (_request, _h) => {
+            return 'Welcome to "GreenRun - Sports" API';
+        }
+    });
+    // Insert a new user
     server.route({
         method: 'POST',
         path: '/users',

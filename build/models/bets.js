@@ -63,7 +63,7 @@ const settleBet = (event_id, body) => __awaiter(void 0, void 0, void 0, function
         // @ts-ignore
         status: body.status,
         // @ts-ignore
-        winner_id: body.option,
+        won_opt: body.option,
         update_at: db_1.default.fn.now()
     });
     // Select corresponding bets to be settled

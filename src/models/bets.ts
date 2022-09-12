@@ -52,7 +52,7 @@ export const settleBet = async (event_id: String, body: Object) => {
             // @ts-ignore
             status: body.status,
             // @ts-ignore
-            winner_id: body.option,
+            won_opt: body.option,
             update_at: knex.fn.now()
         });
 

@@ -72,17 +72,17 @@ export const addBetUser = async (user_id: String, event_id: String, body: Object
     // @ts-ignore
     switch (body.option) {
         // @ts-ignore
-        case object.event.opt1_id:
+        case object.event.bet_opt1:
         // @ts-ignore
             odd = object.event.odd1_id;
             break;
         // @ts-ignore
-        case object.event.opt2_id:
+        case object.event.bet_opt2:
             // @ts-ignore
             odd = object.event.odd2_id;
             break;
         // @ts-ignore
-        case object.event.opt3_id:
+        case object.event.bet_opt3:
             // @ts-ignore
             odd = object.event.odd2_id;
             break;

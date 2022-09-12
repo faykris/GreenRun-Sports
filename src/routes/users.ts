@@ -3,6 +3,16 @@ import {addBetUser, addUser, updateUser, updateStatusUser} from '../models/users
 
 export const users = (server: Server) => {
 
+    // Welcome Message
+    server.route({
+        method: 'GET',
+        path: '/',
+        handler: (_request: Request, _h: ResponseToolkit) => {
+            return 'Welcome to "GreenRun - Sports" API';
+        }
+    });
+
+    // Insert a new user
     server.route({
         method: 'POST',
         path: '/users',
