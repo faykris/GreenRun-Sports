@@ -2,6 +2,10 @@
 ![](https://rebustech.io/wp-content/uploads/2020/12/GreenRun-Logo-Design-final-high-resolution-green-1.png)
 This repository has a demonstration about an API that will be used for a sportsbook application.
 
+## Deployed in Heroku
+You can use this URL to make tests of the API:
+- https://grenrun-sports.herokuapp.com/
+
 ## Technologies & frameworks used
 - Nodejs
 - MySQL

@@ -7,7 +7,6 @@ export const bets = (server: Server) => {
         path: '/transaction/bets/sport/{sport}',
         handler: (request: Request, h: ResponseToolkit) => {
             const sport = request.params.sport;
-
             return getBetsListBySport(sport)
                 .then((response) => {
                     // @ts-ignore
@@ -74,5 +73,4 @@ export const bets = (server: Server) => {
                 });
         }
     });
-
 }

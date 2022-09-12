@@ -15,10 +15,8 @@ const users_1 = require("./routes/users");
 const transactions_1 = require("./routes/transactions");
 const bets_1 = require("./routes/bets");
 const init = () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('PORT:', process.env.PORT);
     const server = new hapi_1.Server({
         port: process.env.PORT || 3000,
-        //host: 'localhost'
     });
     (0, users_1.users)(server);
     (0, transactions_1.transactions)(server);

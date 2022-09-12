@@ -16,7 +16,7 @@ export const users = (server: Server) => {
     server.route({
         method: 'POST',
         path: '/users',
-        handler: (request: Request, _h: ResponseToolkit) => {
+        handler: (request: Request, h: ResponseToolkit) => {
             const user = request.payload;
             return addUser(user)
                 .then((response) => {

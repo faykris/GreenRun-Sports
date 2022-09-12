@@ -15,7 +15,7 @@ const users = (server) => {
     server.route({
         method: 'POST',
         path: '/users',
-        handler: (request, _h) => {
+        handler: (request, h) => {
             const user = request.payload;
             return (0, users_1.addUser)(user)
                 .then((response) => {
