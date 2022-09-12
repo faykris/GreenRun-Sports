@@ -1,7 +1,6 @@
 # GreenRun - Sports
+![](https://rebustech.io/wp-content/uploads/2020/12/GreenRun-Logo-Design-final-high-resolution-green-1.png)
 This repository has a demonstration about an API that will be used for a sportsbook application.
-
-The information about this backend solution will be updated soon...
 
 ## Technologies & frameworks used
 - Nodejs
@@ -9,10 +8,18 @@ The information about this backend solution will be updated soon...
 - Hapi
 - Knex
 
+## Database diagram
+![](screenshots/db_diagram_scrs1.png)
+This is the proposal for managing the creation of different types of transactions, such as deposits, withdrawals, bets and rewards when winning.
+
+## Endpoints usage
+![](screenshots/postman_scrs1.png)
+The information about this section will be updated soon...
+
 ## Pending implementations
 - Demo video of the API usage
-- Bet Settler endpoint (This must update events, bets, user_bets, and insert new transactions when the users had been selected the winner options).
-- Add authentication fot the roles' usage.
+- Some code adjustments
+- Add authentication for the roles' usage.
 - Deploy this API in a cloud service.
 
 ## Authors
