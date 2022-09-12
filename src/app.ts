@@ -6,7 +6,7 @@ import { bets } from "./routes/bets";
 
 export const init = async () => {
     const server = new Server({
-        port: 3000,
+        port: process.env.PORT || 3000,
         host: 'localhost'
     });
 
