@@ -63,7 +63,7 @@ export const bets = (server: Server) => {
         handler: (request: Request, h: ResponseToolkit) => {
             const event_id = request.params.event_id;
             const body = request.payload;
-            return settleBet(event_id, body) // {status: 'settled' || 'cancelled'}
+            return settleBet(event_id, body) // {status: 'settled'}
                 .then((response) => {
                     // @ts-ignore
                     return h.response(response).code(response.statusCode);
