@@ -6,11 +6,11 @@ const transactions = (server) => {
     // Insert a deposit transaction from user
     server.route({
         method: 'POST',
-        path: '/transactions/deposit/user/{id}',
+        path: '/transactions/deposit/user/{user_id}',
         handler: (request, h) => {
-            const id = request.params.id;
+            const user_id = request.params.user_id;
             const user = request.payload; // body: { amount }
-            return (0, transactions_1.addUserDepot)(id, user)
+            return (0, transactions_1.addUserDepot)(user_id, user)
                 .then((response) => {
                 // @ts-ignore
                 return h.response(response).code(response.statusCode);
@@ -24,11 +24,11 @@ const transactions = (server) => {
     // Insert a withdraw transaction from user
     server.route({
         method: 'POST',
-        path: '/transactions/withdraw/user/{id}',
+        path: '/transactions/withdraw/user/{user_id}',
         handler: (request, h) => {
-            const id = request.params.id;
+            const user_id = request.params.user_id;
             const user = request.payload; // body: { amount }
-            return (0, transactions_1.addUserWithdraw)(id, user)
+            return (0, transactions_1.addUserWithdraw)(user_id, user)
                 .then((response) => {
                 // @ts-ignore
                 return h.response(response).code(response.statusCode);
@@ -58,13 +58,13 @@ const transactions = (server) => {
             });
         }
     });
-    // Get a user balance with their ID
+    // Get a user balance with ID
     server.route({
         method: 'GET',
-        path: '/transactions/balance/user/{id}',
+        path: '/transactions/balance/user/{user_id}',
         handler: (request, h) => {
-            const id = request.params.id;
-            return (0, transactions_1.getTransactionBalance)(id)
+            const user_id = request.params.user_id;
+            return (0, transactions_1.getTransactionBalance)(user_id)
                 .then((response) => {
                 // @ts-ignore
                 return h.response(response).code(response.statusCode);
@@ -78,11 +78,11 @@ const transactions = (server) => {
     // Get transactions by category and ID
     server.route({
         method: 'GET',
-        path: '/transactions/{category}/{id}',
+        path: '/transactions/category/{category}/user/{user_id}',
         handler: (request, h) => {
-            const id = request.params.id;
+            const user_id = request.params.user_id;
             const category = request.params.category;
-            return (0, transactions_1.getTranUserByCategory)(id, category)
+            return (0, transactions_1.getTranUserByCategory)(user_id, category)
                 .then((response) => {
                 // @ts-ignore
                 return h.response(response).code(response.statusCode);

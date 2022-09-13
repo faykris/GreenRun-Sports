@@ -6,7 +6,7 @@ export const bets = (server: Server) => {
     // Select all transactions by sport
     server.route({
         method: 'GET',
-        path: '/transaction/bets/sport/{sport}',
+        path: '/transactions/bets/sport/{sport}',
         handler: (request: Request, h: ResponseToolkit) => {
             const sport = request.params.sport;
             return getBetsListBySport(sport)
@@ -24,7 +24,7 @@ export const bets = (server: Server) => {
     // Select all transactions by bet option name
     server.route({
         method: 'GET',
-        path: '/transaction/bets/name/{name}',
+        path: '/transactions/bets/name/{name}',
         handler: (request: Request, h: ResponseToolkit) => {
             const name = request.params.name;
             return getBetsListByEvent(name)

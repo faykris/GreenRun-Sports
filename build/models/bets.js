@@ -30,18 +30,28 @@ const getBetsListByEvent = (name) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.getBetsListByEvent = getBetsListByEvent;
 const changeBetStatus = (event_id, body) => __awaiter(void 0, void 0, void 0, function* () {
+    const event_obj = yield (0, users_1.getEvent)(event_id);
+    if (event_obj.statusCode !== 200)
+        return event_obj;
+    // @ts-ignore
+    const status = body.status;
+    if (!status)
+        return { statusCode: 400, message: "The field 'status' is not specified to bet" };
+    if (status !== 'active' && status !== 'cancelled')
+        return { statusCode: 400, message: "Invalid status value" };
+    if (event_obj.event.status === 'settled') {
+        return { statusCode: 401, message: 'Event was previously settled and it can\'t be changed' };
+    }
     yield (0, db_1.default)(process.env.T_EVENTS)
         .where({ id: Number(event_id) })
         .update({
-        // @ts-ignore
-        status: body.status,
+        status,
         update_at: db_1.default.fn.now()
     });
     yield (0, db_1.default)(process.env.T_BETS)
         .where({ event_id: Number(event_id) })
         .update({
-        // @ts-ignore
-        status: body.status,
+        status,
         update_at: db_1.default.fn.now()
     });
     return { statusCode: 201, message: 'Event status updated' };
@@ -49,7 +59,10 @@ const changeBetStatus = (event_id, body) => __awaiter(void 0, void 0, void 0, fu
 exports.changeBetStatus = changeBetStatus;
 const settleBet = (event_id, body) => __awaiter(void 0, void 0, void 0, function* () {
     const event_obj = yield (0, users_1.getEvent)(event_id);
-    if (!event_obj.event.status || event_obj.event.status === 'cancel') {
+    if (event_obj.statusCode !== 200)
+        return event_obj;
+    // @ts-ignore
+    if (!body.status || body.status !== 'settled') {
         return { statusCode: 400, message: 'Invalid status to settle event' };
     }
     if (event_obj.event.status === 'settled') {
@@ -57,6 +70,10 @@ const settleBet = (event_id, body) => __awaiter(void 0, void 0, void 0, function
     }
     // @ts-ignore
     if (!body.option || body.option < 1 || body.option > 3) {
+        return { statusCode: 400, message: 'Invalid option to settle event' };
+    }
+    // @ts-ignore
+    if (body.option === 3 && !event_obj.event.bet_opt3) {
         return { statusCode: 400, message: 'Invalid option to settle event' };
     }
     // Change status of event to settled
@@ -85,6 +102,8 @@ const settleBet = (event_id, body) => __awaiter(void 0, void 0, void 0, function
             })
                 .update({
                 result,
+                // @ts-ignore
+                status: body.status,
                 update_at: db_1.default.fn.now()
             })
                 .then(() => __awaiter(void 0, void 0, void 0, function* () {

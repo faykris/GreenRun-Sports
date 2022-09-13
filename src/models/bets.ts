@@ -17,19 +17,30 @@ export const getBetsListByEvent = async (name: String) => {
 }
 
 export const changeBetStatus = async (event_id: String, body: Object) => {
+    const event_obj = await getEvent(event_id);
+    if (event_obj.statusCode !== 200) return event_obj;
+
+    // @ts-ignore
+    const status = body.status;
+    if (!status) return {statusCode: 400, message: "The field 'status' is not specified to bet"};
+    if (status !== 'active' && status !== 'cancelled') return {statusCode: 400, message: "Invalid status value"};
+
+
+    if (event_obj.event.status === 'settled') {
+        return {statusCode: 401, message: 'Event was previously settled and it can\'t be changed'};
+    }
+
     await knex(process.env.T_EVENTS)
         .where({id: Number(event_id)})
         .update({
-            // @ts-ignore
-            status: body.status,
+            status,
             update_at: knex.fn.now()
         });
 
     await knex(process.env.T_BETS)
         .where({event_id: Number(event_id)})
         .update({
-            // @ts-ignore
-            status: body.status,
+            status,
             update_at: knex.fn.now()
         });
     return {statusCode: 201, message: 'Event status updated'};
@@ -37,8 +48,10 @@ export const changeBetStatus = async (event_id: String, body: Object) => {
 
 export const settleBet = async (event_id: String, body: Object) => {
     const event_obj = await getEvent(event_id);
+    if (event_obj.statusCode !== 200) return event_obj;
 
-    if (!event_obj.event.status || event_obj.event.status === 'cancel') {
+    // @ts-ignore
+    if (!body.status || body.status !== 'settled') {
         return {statusCode: 400, message: 'Invalid status to settle event'};
     }
     if (event_obj.event.status === 'settled') {
@@ -46,6 +59,10 @@ export const settleBet = async (event_id: String, body: Object) => {
     }
     // @ts-ignore
     if (!body.option || body.option < 1 || body.option > 3) {
+        return {statusCode: 400, message: 'Invalid option to settle event'};
+    }
+    // @ts-ignore
+    if (body.option === 3 && !event_obj.event.bet_opt3) {
         return {statusCode: 400, message: 'Invalid option to settle event'};
     }
     // Change status of event to settled
@@ -76,6 +93,8 @@ export const settleBet = async (event_id: String, body: Object) => {
                     })
                     .update({
                         result,
+                        // @ts-ignore
+                        status: body.status,
                         update_at: knex.fn.now()
                     })
                     .then(async () => {
