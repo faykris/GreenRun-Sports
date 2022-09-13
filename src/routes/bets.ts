@@ -2,6 +2,8 @@ import { Server, Request, ResponseToolkit } from '@hapi/hapi';
 import {getBetsListBySport, getBetsListByEvent, changeBetStatus, settleBet} from "../models/bets";
 
 export const bets = (server: Server) => {
+
+    // Select all transactions by sport
     server.route({
         method: 'GET',
         path: '/transaction/bets/sport/{sport}',
@@ -19,6 +21,7 @@ export const bets = (server: Server) => {
         }
     });
 
+    // Select all transactions by bet option name
     server.route({
         method: 'GET',
         path: '/transaction/bets/name/{name}',
@@ -36,7 +39,7 @@ export const bets = (server: Server) => {
         }
     });
 
-    //admin endpoint
+    // ADMIN: Change status of an event - active or cancelled
     server.route({
         method: 'PUT',
         path: '/bets/status/event/{event_id}',
@@ -55,14 +58,14 @@ export const bets = (server: Server) => {
         }
     });
 
-    //admin endpoint
+    // ADMIN: Settle an event, close bets and pay to winners
     server.route({
         method: 'PUT',
         path: '/bets/settle/event/{event_id}',
         handler: (request: Request, h: ResponseToolkit) => {
             const event_id = request.params.event_id;
-            const body = request.payload;
-            return settleBet(event_id, body) // {status: 'settled'}
+            const body = request.payload; // {status: 'settled'}
+            return settleBet(event_id, body)
                 .then((response) => {
                     // @ts-ignore
                     return h.response(response).code(response.statusCode);

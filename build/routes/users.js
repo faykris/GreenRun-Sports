@@ -16,7 +16,7 @@ const users = (server) => {
         method: 'POST',
         path: '/users',
         handler: (request, h) => {
-            const user = request.payload;
+            const user = request.payload; // { users table columns: except id, update_at and delete_at }
             return (0, users_1.addUser)(user)
                 .then((response) => {
                 // @ts-ignore
@@ -28,12 +28,13 @@ const users = (server) => {
             });
         }
     });
+    // Update a user
     server.route({
         method: 'PUT',
         path: '/users/{id}',
         handler: (request, h) => {
             const id = request.params.id;
-            const user = request.payload;
+            const user = request.payload; // { users table columns: except id and state }
             return (0, users_1.updateUser)(id, user)
                 .then((response) => {
                 // @ts-ignore
@@ -45,25 +46,7 @@ const users = (server) => {
             });
         }
     });
-    server.route({
-        method: 'POST',
-        path: '/transactions/bet/user/{user_id}/event/{event_id}',
-        handler: (request, h) => {
-            const user_id = request.params.user_id;
-            const event_id = request.params.event_id;
-            const body = request.payload; // body: {amount, option, bet_id}
-            return (0, users_1.addBetUser)(user_id, event_id, body)
-                .then((response) => {
-                // @ts-ignore
-                return h.response(response).code(response.statusCode);
-            })
-                .catch((e) => {
-                console.log(e);
-                return e.response;
-            });
-        }
-    });
-    //admin endpoint
+    // ADMIN - Update state of a user
     server.route({
         method: 'PUT',
         path: '/users/state/{id}',

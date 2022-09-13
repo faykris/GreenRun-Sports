@@ -1,5 +1,5 @@
 import { Server, Request, ResponseToolkit } from '@hapi/hapi';
-import {addBetUser, addUser, updateUser, updateStatusUser} from '../models/users';
+import { addUser, updateUser, updateStatusUser } from '../models/users';
 
 export const users = (server: Server) => {
 
@@ -17,7 +17,7 @@ export const users = (server: Server) => {
         method: 'POST',
         path: '/users',
         handler: (request: Request, h: ResponseToolkit) => {
-            const user = request.payload;
+            const user = request.payload; // { users table columns: except id, update_at and delete_at }
             return addUser(user)
                 .then((response) => {
                     // @ts-ignore
@@ -30,12 +30,13 @@ export const users = (server: Server) => {
         }
     });
 
+    // Update a user
     server.route({
         method: 'PUT',
         path: '/users/{id}',
         handler: (request: Request, h: ResponseToolkit) => {
             const id = request.params.id;
-            const user = request.payload;
+            const user = request.payload; // { users table columns: except id and state }
             return updateUser(id, user)
                 .then((response) => {
                     // @ts-ignore
@@ -48,25 +49,7 @@ export const users = (server: Server) => {
         }
     });
 
-    server.route({
-        method: 'POST',
-        path: '/transactions/bet/user/{user_id}/event/{event_id}',
-        handler: (request: Request, h: ResponseToolkit) => {
-            const user_id = request.params.user_id;
-            const event_id = request.params.event_id;
-            const body = request.payload; // body: {amount, option, bet_id}
-            return addBetUser(user_id, event_id, body)
-                .then((response) => {
-                    // @ts-ignore
-                    return h.response(response).code(response.statusCode);
-                })
-                .catch((e) => {
-                    console.log(e);
-                    return e.response;
-                });
-        }
-    });
-    //admin endpoint
+    // ADMIN - Update state of a user
     server.route({
         method: 'PUT',
         path: '/users/state/{id}',

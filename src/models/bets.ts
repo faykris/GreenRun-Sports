@@ -32,18 +32,21 @@ export const changeBetStatus = async (event_id: String, body: Object) => {
             status: body.status,
             update_at: knex.fn.now()
         });
-    return {statusCode: 201, message: 'Event status updated'}
+    return {statusCode: 201, message: 'Event status updated'};
 }
 
 export const settleBet = async (event_id: String, body: Object) => {
     const event_obj = await getEvent(event_id);
 
     if (!event_obj.event.status || event_obj.event.status === 'cancel') {
-        return {statusCode: 400, message: 'Invalid status to settle bet'}
+        return {statusCode: 400, message: 'Invalid status to settle event'};
+    }
+    if (event_obj.event.status === 'settled') {
+        return {statusCode: 400, message: 'This event was already settled before'};
     }
     // @ts-ignore
     if (!body.option || body.option < 1 || body.option > 3) {
-        return {statusCode: 400, message: 'Invalid option to settle bet'}
+        return {statusCode: 400, message: 'Invalid option to settle event'};
     }
     // Change status of event to settled
     await knex(process.env.T_EVENTS)
@@ -122,5 +125,5 @@ export const settleBet = async (event_id: String, body: Object) => {
             });
         });
 
-    return {statusCode: 201, message: 'Event status was settled successfully'}
+    return {statusCode: 201, message: 'Event was settled successfully'};
 }

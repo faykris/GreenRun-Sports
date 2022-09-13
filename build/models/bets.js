@@ -50,11 +50,14 @@ exports.changeBetStatus = changeBetStatus;
 const settleBet = (event_id, body) => __awaiter(void 0, void 0, void 0, function* () {
     const event_obj = yield (0, users_1.getEvent)(event_id);
     if (!event_obj.event.status || event_obj.event.status === 'cancel') {
-        return { statusCode: 400, message: 'Invalid status to settle bet' };
+        return { statusCode: 400, message: 'Invalid status to settle event' };
+    }
+    if (event_obj.event.status === 'settled') {
+        return { statusCode: 400, message: 'This event was already settled before' };
     }
     // @ts-ignore
     if (!body.option || body.option < 1 || body.option > 3) {
-        return { statusCode: 400, message: 'Invalid option to settle bet' };
+        return { statusCode: 400, message: 'Invalid option to settle event' };
     }
     // Change status of event to settled
     yield (0, db_1.default)(process.env.T_EVENTS)
@@ -130,6 +133,6 @@ const settleBet = (event_id, body) => __awaiter(void 0, void 0, void 0, function
             }));
         }));
     });
-    return { statusCode: 201, message: 'Event status was settled successfully' };
+    return { statusCode: 201, message: 'Event was settled successfully' };
 });
 exports.settleBet = settleBet;

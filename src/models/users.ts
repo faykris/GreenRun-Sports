@@ -12,10 +12,24 @@ export const updateUser = async (id: String, user: Object) => {
             ...user,
             update_at: knex.fn.now()
         });
-    return {statusCode: 201, message: 'User updated'}
+    return {statusCode: 201, message: 'User updated'};
+}
+
+export const getUser = async (id: String) => {
+    if(isNaN(Number(id))) return {statusCode: 400, message: 'Invalid user ID'};
+
+    const userResults = await knex(process.env.T_USERS)
+        .where({id: Number(id)})
+        .select('*');
+    if (userResults && userResults.length > 0) {
+        return {statusCode: 200, event: userResults[0], message: 'Event was found'};
+    }
+    return {statusCode: 404, message: 'User not found'};
 }
 
 export const getEvent = async (id: String) => {
+    if(isNaN(Number(id))) return {statusCode: 400, message: 'Invalid event ID'};
+
     const events_results = await knex(process.env.T_EVENTS)
         .select('*')
         .where({id});
@@ -26,100 +40,20 @@ export const getEvent = async (id: String) => {
 
 }
 
-export const addBetUser = async (user_id: String, event_id: String, body: Object) => {
-    const totalAmount = await knex(process.env.T_TRANSACTIONS)
-        .sum('amount')
-        .where({user_id})
-        .where({category: 'deposit'})
-        .where({status: 'active'})
-        .as('totalAmount');
+export const getBetByOption = async (id: String, bet_option: number) => {
+    if(isNaN(Number(id))) return {statusCode: 400, message: 'Invalid bet ID'};
+    if(isNaN(bet_option)) return {statusCode: 400, message: 'Invalid option number'};
 
-    const totalWithdraw = await knex(process.env.T_TRANSACTIONS)
-        .sum('amount')
-        .where({user_id})
-        .where({category: 'withdraw'})
-        .where({status: 'active'})
-        .as('totalWithdraw');
-
-    const totalBets = await knex(process.env.T_TRANSACTIONS)
-        .sum('amount')
-        .where({user_id})
-        .where({category: 'bet'})
-        .where({status: 'active'})
-        .as('totalWithdraw');
-
-    const quantity = totalAmount[0]['sum(`amount`)'] - totalWithdraw[0]['sum(`amount`)'] - totalBets[0]['sum(`amount`)'];
-
-    // @ts-ignore
-    if (body.amount <= 0) {
-        return {statusCode: 400, message: 'The bet can\'t be zero or below zero' };
+    const bet_results = await knex(process.env.T_BETS)
+        .select('*')
+        .where({
+            id: Number(id),
+            bet_option
+        });
+    if (bet_results.length > 0) {
+        return {statusCode: 200, event: bet_results[0], message: `Bet ${id} with option ${bet_option} was found`};
     }
-
-    if (quantity <= 0) {
-        return {statusCode: 400, message: 'The total active amount must be greater than zero'};
-    }
-    // @ts-ignore
-    if (body.amount > quantity) {
-        return {statusCode: 400, message: 'The bet can\'t be greater than total active amount'};
-    }
-    // @ts-ignore
-    if (body.option === undefined || body.option <= 0 || body.option > 3)  {
-        return {statusCode: 400, message: 'Invalid option number'};
-    }
-    const object = await getEvent(event_id);
-
-    let odd = 0;
-    // @ts-ignore
-    switch (body.option) {
-        // @ts-ignore
-        case object.event.bet_opt1:
-        // @ts-ignore
-            odd = object.event.odd1_id;
-            break;
-        // @ts-ignore
-        case object.event.bet_opt2:
-            // @ts-ignore
-            odd = object.event.odd2_id;
-            break;
-        // @ts-ignore
-        case object.event.bet_opt3:
-            // @ts-ignore
-            odd = object.event.odd2_id;
-            break;
-        default:
-            break;
-    }
-
-    if (odd <= 0) {
-        return {statusCode: 400, message: 'The odd for that option can\'t be equal to zero or below zero'};
-    }
-    // @ts-ignore
-    if (object.statusCode === 200) {
-        return await knex(process.env.T_USER_BETS)
-            .insert({
-                user_id,
-                // @ts-ignore
-                bet_id: body.bet_id,
-                odd,
-                // @ts-ignore
-                amount: body.amount,
-                status: 'open',
-            })
-            .returning('id')
-            .then(async (user_bet_id) => {
-                await knex(process.env.T_TRANSACTIONS)
-                    .insert({
-                        user_id: Number(user_id),
-                        // @ts-ignore
-                        amount: body.amount,
-                        category: 'bet',
-                        status: 'active',
-                        user_bet_id
-                    });
-                return {statusCode: 201, message: 'Bet done'}
-            })
-    }
-    return object;
+    return {statusCode: 404, message: `Bet ${id} with option ${bet_option} not found`};
 }
 
 export const updateStatusUser = async (id: String, body: Object) => {
@@ -130,5 +64,5 @@ export const updateStatusUser = async (id: String, body: Object) => {
             user_state: body.state,
             update_at: knex.fn.now()
         });
-    return {statusCode: 201, message: 'User updated'}
+    return {statusCode: 201, message: 'User updated'};
 }
