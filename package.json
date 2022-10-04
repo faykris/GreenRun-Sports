@@ -21,7 +21,11 @@
   },
   "dependencies": {
     "@hapi/hapi": "^20.2.2",
+    "@hapi/jwt": "^3.0.0",
     "dotenv": "^16.0.2",
+    "hapi-auth-jwt2": "^10.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^2.1.4",
     "knex": "^2.3.0",
     "mysql": "^2.18.1"
   }

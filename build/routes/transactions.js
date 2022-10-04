@@ -6,6 +6,10 @@ const transactions = (server) => {
     // Insert a deposit transaction from user
     server.route({
         method: 'POST',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         path: '/transactions/deposit/user/{user_id}',
         handler: (request, h) => {
             const user_id = request.params.user_id;
@@ -25,6 +29,10 @@ const transactions = (server) => {
     server.route({
         method: 'POST',
         path: '/transactions/withdraw/user/{user_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request, h) => {
             const user_id = request.params.user_id;
             const user = request.payload; // body: { amount }
@@ -43,6 +51,10 @@ const transactions = (server) => {
     server.route({
         method: 'POST',
         path: '/transactions/bet/event/{event_id}/user/{user_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request, h) => {
             const user_id = request.params.user_id;
             const event_id = request.params.event_id;
@@ -62,6 +74,10 @@ const transactions = (server) => {
     server.route({
         method: 'GET',
         path: '/transactions/balance/user/{user_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request, h) => {
             const user_id = request.params.user_id;
             return (0, transactions_1.getTransactionBalance)(user_id)
@@ -78,6 +94,10 @@ const transactions = (server) => {
     // Get transactions by category and ID
     server.route({
         method: 'GET',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         path: '/transactions/category/{category}/user/{user_id}',
         handler: (request, h) => {
             const user_id = request.params.user_id;
@@ -97,6 +117,10 @@ const transactions = (server) => {
     server.route({
         method: 'GET',
         path: '/transactions/user/{user_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request, h) => {
             const user_id = request.params.user_id;
             return (0, transactions_1.getUserTransactions)(user_id)

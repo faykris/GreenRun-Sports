@@ -7,6 +7,10 @@ export const transactions = (server: Server) => {
     // Insert a deposit transaction from user
     server.route({
         method: 'POST',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         path: '/transactions/deposit/user/{user_id}',
         handler: (request: Request, h: ResponseToolkit) => {
             const user_id = request.params.user_id;
@@ -27,6 +31,10 @@ export const transactions = (server: Server) => {
     server.route({
         method: 'POST',
         path: '/transactions/withdraw/user/{user_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request: Request, h: ResponseToolkit) => {
             const user_id = request.params.user_id;
             const user = request.payload; // body: { amount }
@@ -46,6 +54,10 @@ export const transactions = (server: Server) => {
     server.route({
         method: 'POST',
         path: '/transactions/bet/event/{event_id}/user/{user_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request: Request, h: ResponseToolkit) => {
             const user_id = request.params.user_id;
             const event_id = request.params.event_id;
@@ -66,6 +78,10 @@ export const transactions = (server: Server) => {
     server.route({
         method: 'GET',
         path: '/transactions/balance/user/{user_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request: Request, h: ResponseToolkit) => {
             const user_id = request.params.user_id;
             return getTransactionBalance(user_id)
@@ -83,6 +99,10 @@ export const transactions = (server: Server) => {
     // Get transactions by category and ID
     server.route({
         method: 'GET',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         path: '/transactions/category/{category}/user/{user_id}',
         handler: (request: Request, h: ResponseToolkit) => {
             const user_id = request.params.user_id;
@@ -103,6 +123,10 @@ export const transactions = (server: Server) => {
     server.route({
         method: 'GET',
         path: '/transactions/user/{user_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request: Request, h: ResponseToolkit) => {
             const user_id = request.params.user_id;
             return getUserTransactions(user_id)

@@ -6,6 +6,10 @@ const bets = (server) => {
     // Select all transactions by sport
     server.route({
         method: 'GET',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         path: '/transactions/bets/sport/{sport}',
         handler: (request, h) => {
             const sport = request.params.sport;
@@ -24,6 +28,10 @@ const bets = (server) => {
     server.route({
         method: 'GET',
         path: '/transactions/bets/name/{name}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request, h) => {
             const name = request.params.name;
             return (0, bets_1.getBetsListByEvent)(name)
@@ -41,6 +49,10 @@ const bets = (server) => {
     server.route({
         method: 'PUT',
         path: '/bets/status/event/{event_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request, h) => {
             const event_id = request.params.event_id;
             const body = request.payload; // {status: 'active' || 'cancelled'}
@@ -59,6 +71,10 @@ const bets = (server) => {
     server.route({
         method: 'PUT',
         path: '/bets/settle/event/{event_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request, h) => {
             const event_id = request.params.event_id;
             const body = request.payload; // {status: 'settled'}

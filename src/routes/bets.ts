@@ -6,6 +6,10 @@ export const bets = (server: Server) => {
     // Select all transactions by sport
     server.route({
         method: 'GET',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         path: '/transactions/bets/sport/{sport}',
         handler: (request: Request, h: ResponseToolkit) => {
             const sport = request.params.sport;
@@ -25,6 +29,10 @@ export const bets = (server: Server) => {
     server.route({
         method: 'GET',
         path: '/transactions/bets/name/{name}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request: Request, h: ResponseToolkit) => {
             const name = request.params.name;
             return getBetsListByEvent(name)
@@ -43,6 +51,10 @@ export const bets = (server: Server) => {
     server.route({
         method: 'PUT',
         path: '/bets/status/event/{event_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request: Request, h: ResponseToolkit) => {
             const event_id = request.params.event_id;
             const body = request.payload; // {status: 'active' || 'cancelled'}
@@ -62,6 +74,10 @@ export const bets = (server: Server) => {
     server.route({
         method: 'PUT',
         path: '/bets/settle/event/{event_id}',
+        // @ts-ignore
+        config: {
+            auth: 'jwt'
+        },
         handler: (request: Request, h: ResponseToolkit) => {
             const event_id = request.params.event_id;
             const body = request.payload; // {status: 'settled'}
