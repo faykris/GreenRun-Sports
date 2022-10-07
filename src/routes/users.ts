@@ -1,20 +1,8 @@
 import { Server, Request, ResponseToolkit } from '@hapi/hapi';
-import { addUser, updateUser, updateStatusUser } from '../models/users';
+import {addUser, updateUser, updateStatusUser, checkLoginFields} from '../models/users';
+import { User } from "../models/users";
 const Jwt = require('@hapi/jwt');
 
-// const verifyToken = (artifact: object, secret: string, options = {}) => {
-//     try {
-//         Jwt.token.verify(artifact, secret, options);
-//         return { isValid: true };
-//     }
-//     catch (err) {
-//         return {
-//             isValid: false,
-//             // @ts-ignore
-//             error: err.message
-//         };
-//     }
-// };
 
 export const users = (server: Server) => {
 
@@ -32,22 +20,6 @@ export const users = (server: Server) => {
     });
 
     server.route({
-        method: 'GET',
-        path: '/restricted',
-        // @ts-ignore
-        config: {
-            auth: 'jwt'
-        },
-        handler: (request, h) => {
-            console.log(request.auth.credentials);
-            const response = h.response({ text: 'You used a token' })
-            response.header('Authorization', request.headers.authorization)
-            return response
-        }
-    });
-
-
-    server.route({
         method: 'POST',
         path: '/login',
         // @ts-ignore
@@ -55,7 +27,16 @@ export const users = (server: Server) => {
             auth: false
         },
         handler: async (request: Request, h: ResponseToolkit) => {
-            const credentials = request.payload; // { user, password }
+            const credentials: User = { // { email or username, password }
+                // @ts-ignore
+                ...request.payload
+            };
+
+            const loginValidate = await checkLoginFields(credentials);
+
+            if (loginValidate.statusCode !== 200) {
+                return h.response(loginValidate).code(loginValidate.statusCode);
+            }
 
             const token = Jwt.token.generate(
                 credentials,
@@ -64,11 +45,11 @@ export const users = (server: Server) => {
                     algorithm: 'HS512'
                 },
                 {
-                    ttlSec: 14400 // 4 hours
+                    ttlSec: 86400 // 24 hours
                 }
             );
-            console.log('token:',token)
-            return h.response({message:"Logged in successfully", accessToken: token}).code(200);
+            //console.log('token:',token)
+            return h.response({statusCode: 200, accessToken: token, message:"Logged in successfully"}).code(200);
         }
     });
     // provisional endpoint - it will be removed
@@ -77,13 +58,17 @@ export const users = (server: Server) => {
     // Insert a new user
     server.route({
         method: 'POST',
-        path: '/users',
+        path: '/register',
         // @ts-ignore
         config: {
             auth: false
         },
         handler: (request: Request, h: ResponseToolkit) => {
-            const user = request.payload; // { users table columns: except id, update_at and delete_at }
+
+            const user: User = {
+                // @ts-ignore
+                ...request.payload
+            }; // { users table columns: except id, update_at and delete_at }
             return addUser(user)
                 .then((response) => {
                     // @ts-ignore
@@ -96,7 +81,7 @@ export const users = (server: Server) => {
         }
     });
 
-    // Update a user
+    // Update info from user
     server.route({
         method: 'PUT',
         path: '/users/{id}',
@@ -141,7 +126,4 @@ export const users = (server: Server) => {
                 });
         }
     });
-
-
-
 }
