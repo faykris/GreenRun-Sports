@@ -12,13 +12,80 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateStatusUser = exports.getBetByOption = exports.getEvent = exports.getUser = exports.updateUser = exports.addUser = void 0;
+exports.updateStatusUser = exports.getBetByOption = exports.getEvent = exports.getUser = exports.updateUser = exports.checkLoginFields = exports.addUser = void 0;
 const db_1 = __importDefault(require("../database/db"));
+// @ts-ignore
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const addUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, db_1.default)(process.env.T_USERS).insert(user);
-    return { statusCode: 201, message: 'Add user done' };
+    return yield (0, db_1.default)(process.env.T_USERS).insert({
+        role: user.role,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone: user.phone,
+        email: user.email,
+        username: user.username,
+        address: user.address,
+        gender: user.gender,
+        birth_date: user.birth_date,
+        country_id: user.country_id,
+        city: user.city,
+        category: user.category,
+        document_id: user.document_id,
+        user_state: user.user_state,
+    })
+        .returning('id')
+        .then((id) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log('id: ', id);
+        // @ts-ignore
+        const insertedUser = yield (0, exports.getUser)(id);
+        if (insertedUser.statusCode !== 200) {
+            return insertedUser;
+        }
+        // @ts-ignore
+        bcrypt_1.default.hash(user.password, Number(process.env.B_SALTS), (err, hash) => __awaiter(void 0, void 0, void 0, function* () {
+            // Store hash in your password DB.
+            yield (0, db_1.default)(process.env.T_ACCESS).insert({
+                user_id: id,
+                email: user.email,
+                username: user.username,
+                password: hash,
+            });
+        }));
+        return { statusCode: 201, message: 'User registration done' };
+    }));
 });
 exports.addUser = addUser;
+const checkLoginFields = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!user.email && !user.username) {
+        return { statusCode: 400, message: 'Email or Username is required' };
+    }
+    if (!user.password) {
+        return { statusCode: 400, message: 'Password is required' };
+    }
+    const userByEmail = yield (0, db_1.default)(process.env.T_ACCESS) // validate by email
+        .where({ email: user.email })
+        .select('*');
+    if (userByEmail && userByEmail.length > 0) {
+        const res = bcrypt_1.default.compareSync(user.password, userByEmail[0].password);
+        if (res === true) {
+            return { statusCode: 200, message: 'User was validated successfully' };
+        }
+        return { statusCode: 401, message: 'Password is incorrect' };
+    }
+    const userByUsername = yield (0, db_1.default)(process.env.T_ACCESS) // validate by username
+        .where({ username: user.username })
+        .select('*');
+    if (userByUsername && userByUsername.length > 0) {
+        // @ts-ignore
+        const res = bcrypt_1.default.compareSync(user.password, userByUsername[0].password);
+        if (res === true) {
+            return { statusCode: 200, message: 'User was validated successfully' };
+        }
+        return { statusCode: 401, message: 'Password is incorrect' };
+    }
+    return { statusCode: 404, message: 'Email or username not found' };
+});
+exports.checkLoginFields = checkLoginFields;
 const updateUser = (id, user) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, db_1.default)(process.env.T_USERS)
         .where({ id: Number(id) })
@@ -33,7 +100,7 @@ const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
         .where({ id: Number(id) })
         .select('*');
     if (userResults && userResults.length > 0) {
-        return { statusCode: 200, event: userResults[0], message: 'Event was found' };
+        return { statusCode: 200, event: userResults[0], message: 'User was found' };
     }
     return { statusCode: 404, message: 'User not found' };
 });

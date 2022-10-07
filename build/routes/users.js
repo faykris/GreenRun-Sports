@@ -12,19 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.users = void 0;
 const users_1 = require("../models/users");
 const Jwt = require('@hapi/jwt');
-// const verifyToken = (artifact: object, secret: string, options = {}) => {
-//     try {
-//         Jwt.token.verify(artifact, secret, options);
-//         return { isValid: true };
-//     }
-//     catch (err) {
-//         return {
-//             isValid: false,
-//             // @ts-ignore
-//             error: err.message
-//         };
-//     }
-// };
 const users = (server) => {
     // Welcome Message
     server.route({
@@ -39,20 +26,6 @@ const users = (server) => {
         }
     });
     server.route({
-        method: 'GET',
-        path: '/restricted',
-        // @ts-ignore
-        config: {
-            auth: 'jwt'
-        },
-        handler: (request, h) => {
-            console.log(request.auth.credentials);
-            const response = h.response({ text: 'You used a token' });
-            response.header('Authorization', request.headers.authorization);
-            return response;
-        }
-    });
-    server.route({
         method: 'POST',
         path: '/login',
         // @ts-ignore
@@ -60,28 +33,32 @@ const users = (server) => {
             auth: false
         },
         handler: (request, h) => __awaiter(void 0, void 0, void 0, function* () {
-            const credentials = request.payload; // { user, password }
+            const credentials = Object.assign({}, request.payload);
+            const loginValidate = yield (0, users_1.checkLoginFields)(credentials);
+            if (loginValidate.statusCode !== 200) {
+                return h.response(loginValidate).code(loginValidate.statusCode);
+            }
             const token = Jwt.token.generate(credentials, {
                 key: process.env.P_KEY,
                 algorithm: 'HS512'
             }, {
-                ttlSec: 14400 // 4 hours
+                ttlSec: 86400 // 24 hours
             });
-            console.log('token:', token);
-            return h.response({ message: "Logged in successfully", accessToken: token }).code(200);
+            //console.log('token:',token)
+            return h.response({ statusCode: 200, accessToken: token, message: "Logged in successfully" }).code(200);
         })
     });
     // provisional endpoint - it will be removed
     // Insert a new user
     server.route({
         method: 'POST',
-        path: '/users',
+        path: '/register',
         // @ts-ignore
         config: {
             auth: false
         },
         handler: (request, h) => {
-            const user = request.payload; // { users table columns: except id, update_at and delete_at }
+            const user = Object.assign({}, request.payload); // { users table columns: except id, update_at and delete_at }
             return (0, users_1.addUser)(user)
                 .then((response) => {
                 // @ts-ignore
@@ -93,7 +70,7 @@ const users = (server) => {
             });
         }
     });
-    // Update a user
+    // Update info from user
     server.route({
         method: 'PUT',
         path: '/users/{id}',
