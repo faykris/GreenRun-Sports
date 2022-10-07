@@ -26,7 +26,7 @@ This is the proposal for managing the creation of different types of transaction
 
 Request:
 ```json5
-POST api/auth/register HTTP/1.1
+POST /register HTTP/1.1
 Accept: application/json
 Content-Type: application/json
 {
@@ -46,13 +46,36 @@ Content-Type: application/json
     "document_id": "100275241",
     "user_state": "active"
 }
+```
 
+Correct output:
+```json5
+{
+    "statusCode": 201,
+    "message": "User registration done"
+}
 ```
 
 ### Login User
 
-
-
+Request:
+```json5
+POST /login HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+{
+    "email": "marissahills@gmail.com",
+    "password": "marisa123",
+}
+```
+Correct output:
+```json5
+{
+  "statusCode": 200,
+  "accessToken": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJpbGxmQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiYmlsbDEyMyIsImlhdCI6MTY2NTExNDczNSwiZXhwIjoxNjY1MjAxMTM1fQ.Uqa6VT7dfZGD478f6ttXRC7eUf-bIyALJvzFZ_1SaWaqXzP2ZHfqniCyUxrEtKbChXPb8sqevL_guuBc_HRncg",
+  "message": "Logged in successfully"
+}
+```
 
 ## Pending implementations
 - Demo video of the API usage
