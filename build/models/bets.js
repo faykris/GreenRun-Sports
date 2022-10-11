@@ -19,14 +19,14 @@ const getBetsListBySport = (sport) => __awaiter(void 0, void 0, void 0, function
     const totalBets = yield (0, db_1.default)(process.env.T_BETS)
         .select('*')
         .where({ sport });
-    return { statusCode: 200, bets: totalBets, message: 'Get bets by sport done' };
+    return { statusCode: 200, bets: totalBets, message: `Get bets by sport ${sport} done` };
 });
 exports.getBetsListBySport = getBetsListBySport;
 const getBetsListByEvent = (name) => __awaiter(void 0, void 0, void 0, function* () {
     const totalBets = yield (0, db_1.default)(process.env.T_BETS)
         .select('*')
         .where({ name });
-    return { statusCode: 200, bets: totalBets, message: 'Get bets by name done' };
+    return { statusCode: 200, bets: totalBets, message: `Get bets by name ${name} done` };
 });
 exports.getBetsListByEvent = getBetsListByEvent;
 const changeBetStatus = (event_id, body) => __awaiter(void 0, void 0, void 0, function* () {

@@ -6,14 +6,14 @@ export const getBetsListBySport = async (sport: String) => {
     const totalBets = await knex(process.env.T_BETS)
         .select('*')
         .where({sport});
-    return {statusCode: 200, bets: totalBets, message: 'Get bets by sport done'}
+    return {statusCode: 200, bets: totalBets, message: `Get bets by sport ${sport} done`}
 }
 
 export const getBetsListByEvent = async (name: String) => {
     const totalBets = await knex(process.env.T_BETS)
         .select('*')
         .where({name});
-    return {statusCode: 200, bets: totalBets, message: 'Get bets by name done'}
+    return {statusCode: 200, bets: totalBets, message: `Get bets by name ${name} done`}
 }
 
 export const changeBetStatus = async (event_id: String, body: Object) => {

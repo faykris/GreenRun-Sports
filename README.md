@@ -108,7 +108,7 @@ Authorization: "Bearer <accessToken>"
 Accept: application/json
 Content-Type: application/json
 {
-"state": "blocked"
+    "state": "blocked"
 }
 ```
 
@@ -244,11 +244,11 @@ Correct output:
   "statusCode": 200,
   "transactions": [
     {
-      "id": 84,
+      "id": 34,
       "user_id": 34,
-      "user_bet_id": 4,
-      "amount": 10000,
-      "category": "bet",
+      "user_bet_id": null,
+      "amount": 35000,
+      "category": "deposit",
       ...
 
     },
@@ -257,8 +257,124 @@ Correct output:
   "message": "Get user transactions done"
 }
 ```
+
+## Bets endpoints
+
+### Get bet transactions by sport
+Request:
+```json
+GET /transactions/bets/sport/<sport> HTTP/1.1
+Authorization: "Bearer <accessToken>"
+Accept: application/json
+Content-Type: application/json
+```
+
+Correct output:
+
+```json
+{
+  "statusCode": 200,
+  "bets": [
+    {
+      "id": 4,
+      "event_id": 4,
+      "bet_option": 1,
+      "sport": "soccer",
+      ...
+
+    },
+    ...
+  ],
+  "message": "Get bets by sport <sport> done"
+}
+```
+
+### Get all transactions by bet option name
+
+Request:
+```json
+GET /transactions/bets/name/<name> HTTP/1.1
+Authorization: "Bearer <accessToken>"
+Accept: application/json
+Content-Type: application/json
+```
+
+Correct output:
+
+```json
+{
+  "statusCode": 200,
+  "bets": [
+    {
+      "id": 4,
+      "event_id": 4,
+      "bet_option": 1,
+      "sport": "soccer",
+      "status": "settled",
+      "name": "Millonarios DC",
+      ...
+
+    },
+    ...
+  ],
+  "message": "Get bets by name <name> done"
+}
+```
+
+### Change event status - Active or Cancelled
+**Only admin users can use this endpoint**
+
+Request:
+```json
+PUT /bets/status/event/<event_id> HTTP/1.1
+Authorization: "Bearer <accessToken>"
+Accept: application/json
+Content-Type: application/json
+{
+    "status": "cancelled"
+}
+```
+
+Correct output:
+
+```json
+{
+  "statusCode": 201,
+  "message": "Event status updated"
+}
+```
+
+### Settle an event
+**Only admin users can use this endpoint**
+
+Request:
+```json
+PUT /bets/settle/event/<event_id> HTTP/1.1
+Authorization: "Bearer <accessToken>"
+Accept: application/json
+Content-Type: application/json
+{
+    "status": "settled"
+}
+```
+
+Correct output:
+
+```json
+{
+  "statusCode": 201,
+  "message": "Event was settled successfully"
+}
+```
+
+### Create an event
+
+- Pending to do this endpoint
+
+
+
 ## Pending implementations
-- Demo video of the API usage
+- Create event endpoint
 - Add roles' usage.
 
 ## Authors
