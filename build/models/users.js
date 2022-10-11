@@ -90,7 +90,7 @@ const updateUser = (id, user) => __awaiter(void 0, void 0, void 0, function* () 
     yield (0, db_1.default)(process.env.T_USERS)
         .where({ id: Number(id) })
         .update(Object.assign(Object.assign({}, user), { update_at: db_1.default.fn.now() }));
-    return { statusCode: 201, message: 'User updated' };
+    return { statusCode: 201, message: 'User info updated' };
 });
 exports.updateUser = updateUser;
 const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -142,6 +142,6 @@ const updateStatusUser = (id, body) => __awaiter(void 0, void 0, void 0, functio
         user_state: body.state,
         update_at: db_1.default.fn.now()
     });
-    return { statusCode: 201, message: 'User updated' };
+    return { statusCode: 201, message: 'User state updated' };
 });
 exports.updateStatusUser = updateStatusUser;

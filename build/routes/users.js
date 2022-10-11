@@ -25,6 +25,7 @@ const users = (server) => {
             return 'Welcome to "GreenRun - Sports" API';
         }
     });
+    // Login previously created user
     server.route({
         method: 'POST',
         path: '/login',
@@ -44,12 +45,10 @@ const users = (server) => {
             }, {
                 ttlSec: 86400 // 24 hours
             });
-            //console.log('token:',token)
             return h.response({ statusCode: 200, accessToken: token, message: "Logged in successfully" }).code(200);
         })
     });
-    // provisional endpoint - it will be removed
-    // Insert a new user
+    // Register a new user, create access token
     server.route({
         method: 'POST',
         path: '/register',
@@ -80,7 +79,7 @@ const users = (server) => {
         },
         handler: (request, h) => {
             const id = request.params.id;
-            const user = request.payload; // { users table columns: except id and state }
+            const user = request.payload; // { users table columns except: id, state, email, username }
             return (0, users_1.updateUser)(id, user)
                 .then((response) => {
                 // @ts-ignore
@@ -103,7 +102,7 @@ const users = (server) => {
         handler: (request, h) => {
             const id = request.params.id;
             const body = request.payload;
-            return (0, users_1.updateStatusUser)(id, body) // { state: active || blocked }
+            return (0, users_1.updateStatusUser)(id, body) // { state: 'active' || 'blocked' }
                 .then((response) => {
                 // @ts-ignore
                 return h.response(response).code(response.statusCode);

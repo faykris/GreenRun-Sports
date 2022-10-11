@@ -19,13 +19,13 @@ You can use this URL to make tests of the API:
 ![](screenshots/db_diagram_scrs1.png)
 This is the proposal for managing the creation of different types of transactions, such as deposits, withdrawals, bets and rewards when winning.
 
-## Endpoints usage
+## Users endpoints
 ![](screenshots/postman_scrs1.png)
 
-### User: Register
+### Register user
 
 Request:
-```json5
+```json
 POST /register HTTP/1.1
 Accept: application/json
 Content-Type: application/json
@@ -49,17 +49,17 @@ Content-Type: application/json
 ```
 
 Correct output:
-```json5
+```json
 {
     "statusCode": 201,
     "message": "User registration done"
 }
 ```
 
-### User: Login 
+### Login user
 
 Request:
-```json5
+```json
 POST /login HTTP/1.1
 Accept: application/json
 Content-Type: application/json
@@ -69,7 +69,7 @@ Content-Type: application/json
 }
 ```
 Correct output:
-```json5
+```json
 {
   "statusCode": 200,
   "accessToken": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJpbGxmQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiYmlsbDEyMyIsImlhdCI6MTY2NTExNDczNSwiZXhwIjoxNjY1MjAxMTM1fQ.Uqa6VT7dfZGD478f6ttXRC7eUf-bIyALJvzFZ_1SaWaqXzP2ZHfqniCyUxrEtKbChXPb8sqevL_guuBc_HRncg",
@@ -77,10 +77,11 @@ Correct output:
 }
 ```
 
-### User: Update info
+### Update user info
 Request:
-```json5
-PUT /users/<id> HTTP/1.1
+```json
+PUT /users/<user_id> HTTP/1.1
+Authorization: "Bearer <accessToken>"
 Accept: application/json
 Content-Type: application/json
 {
@@ -90,36 +91,175 @@ Content-Type: application/json
 ```
 
 Correct output:
-```json5
+```json
 {
   "statusCode": 201,
   "message": "User info updated"
 }
 ```
 
-### User: Update state - Admin
+### Update user state
+**Only admin users can use this endpoint**
+
 Request:
-```json5
-PUT /users/state/<id> HTTP/1.1
+```json
+PUT /users/state/<user_id> HTTP/1.1
+Authorization: "Bearer <accessToken>"
 Accept: application/json
 Content-Type: application/json
 {
-    "last_name": "P. Thomson",
-    "address": "Avenue 11-12 street",
+"state": "blocked"
 }
 ```
 
 Correct output:
-```json5
+```json
 {
-  "state": "blocked"
+  "statusCode": 201,
+  "message": "User state updated"
+}
+```
+## Transactions endpoints
+### Make a deposit
+Request:
+```json
+POST /transactions/deposit/user/<user_id> HTTP/1.1
+Authorization: "Bearer <accessToken>"
+Accept: application/json
+Content-Type: application/json
+{
+    "amount": 10000
 }
 ```
 
+Correct output:
+```json
+{
+  "statusCode": 201,
+  "message": "Deposit transaction done"
+}
+```
+
+### Make a withdraw
+Request:
+```json
+POST /transactions/withdraw/user/<user_id> HTTP/1.1
+Authorization: "Bearer <accessToken>"
+Accept: application/json
+Content-Type: application/json
+{
+    "amount": 1000
+}
+```
+
+Correct output:
+```json
+{
+  "statusCode": 201,
+  "message": "Withdraw transaction done"
+}
+```
+
+### Make a bet
+Request:
+```json
+POST /transactions/bet/user/<user_id> HTTP/1.1
+Authorization: "Bearer <accessToken>"
+Accept: application/json
+Content-Type: application/json
+{
+    "amount": 2000
+}
+```
+
+Correct output:
+```json
+{
+  "statusCode": 201,
+  "message": "Bet transaction done"
+}
+```
+
+### Get user transactions balance
+Request:
+```json
+GET /transactions/balance/user/<user_id> HTTP/1.1
+Authorization: "Bearer <accessToken>"
+Accept: application/json
+Content-Type: application/json
+```
+
+Correct output:
+```json
+{
+  "statusCode": 200,
+  "balance": 7000,
+  "message": "Get balance transactions done"
+}
+```
+
+### Get user transactions by category
+Request:
+```json
+GET /transactions/category/<category>/user/<user_id> HTTP/1.1
+Authorization: "Bearer <accessToken>"
+Accept: application/json
+Content-Type: application/json
+```
+
+Correct output:
+
+```json
+{
+  "statusCode": 200,
+  "transactions": [
+    {
+      "id": 84,
+      "user_id": 34,
+      "user_bet_id": 4,
+      "amount": 10000,
+      "category": "bet",
+      ...
+
+    },
+    ...
+  ],
+  "message": "Get transactions by category <category> done"
+}
+```
+
+### Get all transactions from a user
+Request:
+```json
+GET /transactions/user/<user_id> HTTP/1.1
+Authorization: "Bearer <accessToken>"
+Accept: application/json
+Content-Type: application/json
+```
+
+Correct output:
+
+```json
+{
+  "statusCode": 200,
+  "transactions": [
+    {
+      "id": 84,
+      "user_id": 34,
+      "user_bet_id": 4,
+      "amount": 10000,
+      "category": "bet",
+      ...
+
+    },
+    ...
+  ],
+  "message": "Get user transactions done"
+}
+```
 ## Pending implementations
 - Demo video of the API usage
-- Add endpoint descriptions
-- Add the roles' usage.
+- Add roles' usage.
 
 ## Authors
 - Cristian Pinzon
