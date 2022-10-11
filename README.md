@@ -1,6 +1,6 @@
 # GreenRun - Sports
 ![](https://rebustech.io/wp-content/uploads/2020/12/GreenRun-Logo-Design-final-high-resolution-green-1.png)
-This repository has a demonstration about an API that could be used for a sportsbook application.
+This repository has a demonstration about REST API that could be used for a sportsbook application.
 
 ## Deployed in Heroku
 You can use this URL to make tests of the API:
@@ -22,7 +22,7 @@ This is the proposal for managing the creation of different types of transaction
 ## Endpoints usage
 ![](screenshots/postman_scrs1.png)
 
-### Register User
+### User: Register
 
 Request:
 ```json5
@@ -56,7 +56,7 @@ Correct output:
 }
 ```
 
-### Login User
+### User: Login 
 
 Request:
 ```json5
@@ -74,6 +74,45 @@ Correct output:
   "statusCode": 200,
   "accessToken": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJpbGxmQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiYmlsbDEyMyIsImlhdCI6MTY2NTExNDczNSwiZXhwIjoxNjY1MjAxMTM1fQ.Uqa6VT7dfZGD478f6ttXRC7eUf-bIyALJvzFZ_1SaWaqXzP2ZHfqniCyUxrEtKbChXPb8sqevL_guuBc_HRncg",
   "message": "Logged in successfully"
+}
+```
+
+### User: Update info
+Request:
+```json5
+PUT /users/<id> HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+{
+    "last_name": "P. Thomson",
+    "address": "Avenue 11-12 street",
+}
+```
+
+Correct output:
+```json5
+{
+  "statusCode": 201,
+  "message": "User info updated"
+}
+```
+
+### User: Update state - Admin
+Request:
+```json5
+PUT /users/state/<id> HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+{
+    "last_name": "P. Thomson",
+    "address": "Avenue 11-12 street",
+}
+```
+
+Correct output:
+```json5
+{
+  "state": "blocked"
 }
 ```
 

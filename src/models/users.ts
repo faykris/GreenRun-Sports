@@ -105,7 +105,7 @@ export const updateUser = async (id: String, user: Object) => {
             ...user,
             update_at: knex.fn.now()
         });
-    return {statusCode: 201, message: 'User updated'};
+    return {statusCode: 201, message: 'User info updated'};
 }
 
 export const getUser = async (id: String) => {
@@ -157,5 +157,5 @@ export const updateStatusUser = async (id: String, body: Object) => {
             user_state: body.state,
             update_at: knex.fn.now()
         });
-    return {statusCode: 201, message: 'User updated'};
+    return {statusCode: 201, message: 'User state updated'};
 }
